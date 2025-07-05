@@ -27,9 +27,12 @@ const Navbar = () => {
   return (
     <nav className="flex items-center justify-between w-full relative bg-white rounded-full px-[10px] py-[20px] ">
       {/* Logo */}
-      <h1 className="text-4xl text-[#3B9DF8] font-medium  font-oswald">
+      <Link
+        to={"/"}
+        className="text-4xl text-[#3B9DF8] font-medium  font-oswald"
+      >
         EduShelf
-      </h1>
+      </Link>
 
       {/* Desktop Nav Links */}
       <ul className="items-center gap-[20px] text-[1rem] text-[#424242] md:flex hidden">
