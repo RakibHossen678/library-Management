@@ -2,14 +2,7 @@ import { CgFacebook } from "react-icons/cg";
 import { BsInstagram, BsLinkedin, BsTwitter } from "react-icons/bs";
 
 const Footer = () => {
-  const footerLinks = [
-    "Service",
-    "Features",
-    "Our Team",
-    "Portfolio",
-    "Blog",
-    "Contact Us",
-  ];
+  const footerLinks = ["All Books", "Add Book", "Borrow Summary"];
 
   const iconClass =
     "text-[1.2rem] p-1.5 cursor-pointer rounded-full hover:text-white hover:bg-[#3B9DF8] text-[#424242] transition-all duration-300";
