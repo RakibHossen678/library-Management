@@ -3,6 +3,7 @@ import { useGetBooksQuery } from "../redux/api/baseApi";
 import type { IBook } from "../types";
 import { useState } from "react";
 import EditBookModal from "./EditBookModal";
+import DeleteBookModal from "./DeleteModal";
 
 const AllBooks = () => {
   const { data: books } = useGetBooksQuery(undefined);
@@ -12,7 +13,7 @@ const AllBooks = () => {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [seletedBook, setSelectedBook] = useState<IBook | null>(null);
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
-  console.log(selectedBookId);
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 min-h-[calc(100vh-60px)]">
       {/* Title & Description */}
@@ -122,7 +123,12 @@ const AllBooks = () => {
       }
       {
         // Book Delete Modal
-        isOpenDeleteModal && <div></div>
+        isOpenDeleteModal && (
+          <DeleteBookModal
+            selectedBookId={selectedBookId}
+            setIsOpenDeleteModal={setIsOpenDeleteModal}
+          />
+        )
       }
     </div>
   );

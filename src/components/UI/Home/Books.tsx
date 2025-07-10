@@ -1,9 +1,17 @@
 import { MdDeleteOutline, MdEdit, MdLibraryBooks } from "react-icons/md";
 import { useGetBooksQuery } from "../../../redux/api/baseApi";
 import type { IBook } from "../../../types";
+import EditBookModal from "../../../pages/EditBookModal";
+import DeleteBookModal from "../../../pages/DeleteModal";
+import { useState } from "react";
 
 const Books = () => {
   const { data: books } = useGetBooksQuery(undefined);
+  const [isOpenBookEditModal, setIsOpenBookEditModal] = useState(false);
+  const [isOpenBorrowModal, setIsBorrowModal] = useState(false);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const [seletedBook, setSelectedBook] = useState<IBook | null>(null);
+  const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   return (
     <div className="p-6 my-10 max-w-6xl mx-auto">
       <div className=" mb-7">
@@ -57,14 +65,20 @@ const Books = () => {
                 <td className="px-5 py-4 text-center">
                   <div className="flex justify-center gap-4">
                     <button
-                      // onClick={() => handleEditBook(book)}
+                      onClick={() => {
+                        setSelectedBook(book);
+                        setIsOpenBookEditModal(true);
+                      }}
                       className="text-blue-600 hover:text-blue-800"
                       title="Edit"
                     >
                       <MdEdit className="text-xl" />
                     </button>
                     <button
-                      // onClick={() => handleDelete(book._id)}
+                      onClick={() => {
+                        setSelectedBookId(book._id ?? null);
+                        setIsOpenDeleteModal(true);
+                      }}
                       className="text-red-500 hover:text-red-700"
                       title="Delete"
                     >
@@ -72,7 +86,10 @@ const Books = () => {
                     </button>
                     <button
                       disabled={!book.available}
-                      // onClick={() => setBookToBorrow(book)}
+                      onClick={() => {
+                        setSelectedBookId(book._id ?? null);
+                        setIsBorrowModal(true);
+                      }}
                       className={`text-xl ${
                         book.available
                           ? "text-blue-600 hover:text-blue-800"
@@ -89,6 +106,28 @@ const Books = () => {
           </tbody>
         </table>
       </div>
+      {
+        // Book Edit Modal
+        isOpenBookEditModal && seletedBook && (
+          <EditBookModal
+            book={seletedBook}
+            setIsOpenBookEditModal={setIsOpenBookEditModal}
+          />
+        )
+      }
+      {
+        // Book Borrow Modal
+        isOpenBorrowModal && <div></div>
+      }
+      {
+        // Book Delete Modal
+        isOpenDeleteModal && (
+          <DeleteBookModal
+            selectedBookId={selectedBookId}
+            setIsOpenDeleteModal={setIsOpenDeleteModal}
+          />
+        )
+      }
     </div>
   );
 };
