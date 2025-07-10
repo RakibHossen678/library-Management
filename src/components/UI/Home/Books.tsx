@@ -1,61 +1,9 @@
-import {
-  FiEye,
-  FiEdit2,
-  FiTrash2,
-  FiCheckCircle,
-  FiXCircle,
-} from "react-icons/fi";
-
-// Fake data to simulate backend/database
-const books = [
-  {
-    id: 1,
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    genre: "Classic",
-    isbn: "9780743273565",
-    copies: 5,
-    available: true,
-  },
-  {
-    id: 2,
-    title: "Atomic Habits",
-    author: "James Clear",
-    genre: "Self-help",
-    isbn: "9780735211292",
-    copies: 3,
-    available: false,
-  },
-  {
-    id: 3,
-    title: "1984",
-    author: "George Orwell",
-    genre: "Dystopian",
-    isbn: "9780451524935",
-    copies: 8,
-    available: true,
-  },
-  {
-    id: 4,
-    title: "Clean Code",
-    author: "Robert C. Martin",
-    genre: "Programming",
-    isbn: "9780132350884",
-    copies: 2,
-    available: true,
-  },
-  {
-    id: 5,
-    title: "The Hobbit",
-    author: "J.R.R. Tolkien",
-    genre: "Fantasy",
-    isbn: "9780547928227",
-    copies: 0,
-    available: false,
-  },
-];
+import { MdDeleteOutline, MdEdit, MdLibraryBooks } from "react-icons/md";
+import { useGetBooksQuery } from "../../../redux/api/baseApi";
+import type { IBook } from "../../../types";
 
 const Books = () => {
+  const { data: books } = useGetBooksQuery(undefined);
   return (
     <div className="p-6 my-10 max-w-6xl mx-auto">
       <div className=" mb-7">
@@ -69,58 +17,70 @@ const Books = () => {
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden ">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr className="text-left text-gray-600 text-sm font-medium">
-              <th className="px-6 py-3">Title</th>
-              <th className="px-6 py-3">Author</th>
-              <th className="px-6 py-3 hidden md:table-cell">Genre</th>
-              <th className="px-6 py-3 hidden lg:table-cell">ISBN</th>
-              <th className="px-6 py-3">Copies</th>
-              <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3">Actions</th>
+      <div className="overflow-x-auto bg-white rounded-xl ">
+        <table className="min-w-full text-sm text-left text-gray-700">
+          <thead className="bg-blue-50 text-blue-800">
+            <tr>
+              <th className="px-5 py-4">Title</th>
+              <th className="px-5 py-4 text-center">Author</th>
+              <th className="px-5 py-4 text-center">Genre</th>
+              <th className="px-5 py-4 text-center">ISBN</th>
+              <th className="px-5 py-4 text-center">Copies</th>
+              <th className="px-5 py-4 text-center">Status</th>
+              <th className="px-5 py-4 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            {books.map((book) => (
-              <tr key={book.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 font-medium text-gray-900">
-                  {book.title}
+          <tbody>
+            {books?.data?.map((book: IBook, idx: number) => (
+              <tr
+                key={book._id}
+                className={`${
+                  idx % 2 === 0 ? "bg-gray-50" : "bg-white"
+                } transition-all`}
+              >
+                <td className="px-5 py-4">{book.title}</td>
+                <td className="px-5 py-4 text-center">{book.author}</td>
+                <td className="px-5 py-4 text-center">{book.genre}</td>
+                <td className="px-5 py-4 text-center">{book.isbn}</td>
+                <td className="px-5 py-4 text-center">{book.copies}</td>
+                <td className="px-5 py-4 text-center">
+                  <span
+                    className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
+                      book.available
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-600"
+                    }`}
+                  >
+                    {book.available ? "Available" : "Unavailable"}
+                  </span>
                 </td>
-                <td className="px-6 py-4 text-gray-700">{book.author}</td>
-                <td className="px-6 py-4 text-gray-700 hidden md:table-cell">
-                  {book.genre}
-                </td>
-                <td className="px-6 py-4 text-gray-500 hidden lg:table-cell">
-                  {book.isbn}
-                </td>
-                <td className="px-6 py-4 text-gray-700">{book.copies}</td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center">
-                    {book.available ? (
-                      <>
-                        <FiCheckCircle className="text-green-500 mr-1.5" />
-                        <span className="text-green-600">Available</span>
-                      </>
-                    ) : (
-                      <>
-                        <FiXCircle className="text-red-500 mr-1.5" />
-                        <span className="text-red-600">Unavailable</span>
-                      </>
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex space-x-2">
-                    <button className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors">
-                      <FiEye />
+                <td className="px-5 py-4 text-center">
+                  <div className="flex justify-center gap-4">
+                    <button
+                      // onClick={() => handleEditBook(book)}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="Edit"
+                    >
+                      <MdEdit className="text-xl" />
                     </button>
-                    <button className="p-2 text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-full transition-colors">
-                      <FiEdit2 />
+                    <button
+                      // onClick={() => handleDelete(book._id)}
+                      className="text-red-500 hover:text-red-700"
+                      title="Delete"
+                    >
+                      <MdDeleteOutline className="text-xl" />
                     </button>
-                    <button className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors">
-                      <FiTrash2 />
+                    <button
+                      disabled={!book.available}
+                      // onClick={() => setBookToBorrow(book)}
+                      className={`text-xl ${
+                        book.available
+                          ? "text-blue-600 hover:text-blue-800"
+                          : "text-gray-400 cursor-not-allowed"
+                      }`}
+                      title="Borrow"
+                    >
+                      <MdLibraryBooks />
                     </button>
                   </div>
                 </td>

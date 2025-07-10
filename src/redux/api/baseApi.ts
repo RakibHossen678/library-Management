@@ -7,10 +7,6 @@ export const baseApi = createApi({
   }),
   tagTypes: ["books"],
   endpoints: (builder) => ({
-    // getBooks: builder.query({
-    //   query: () => "/books",
-    //   providesTags: ["books"],
-    // }),
     addBook: builder.mutation({
       query: (data) => ({
         url: "/books",
@@ -18,14 +14,26 @@ export const baseApi = createApi({
         body: data,
       }),
     }),
+    getBooks: builder.query({
+      query: () => "/books",
+      providesTags: ["books"],
+    }),
+    updateBook: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/books/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["books"],
+    }),
   }),
 });
 
 export const {
-  // useGetBooksQuery,
   useAddBookMutation,
+  useGetBooksQuery,
+  useUpdateBookMutation,
   // useGetBookQuery,
-  // useUpdateBookMutation,
   // useSaveBookMutation,
   // useDeleteBookMutation,
   // useGetBorrowSummaryQuery,
