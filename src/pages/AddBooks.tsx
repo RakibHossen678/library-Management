@@ -13,6 +13,9 @@ const AddBooks = () => {
     const isbn = (form.elements.namedItem("isbn") as HTMLInputElement).value;
     const copies = (form.elements.namedItem("copies") as HTMLInputElement)
       .value;
+    const description = (
+      form.elements.namedItem("description") as HTMLInputElement
+    ).value;
 
     const book = {
       title,
@@ -20,6 +23,7 @@ const AddBooks = () => {
       genre,
       isbn,
       copies: parseInt(copies),
+      description,
       available: true,
     };
     const { data } = await addBook(book);

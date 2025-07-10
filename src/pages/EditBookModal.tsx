@@ -23,6 +23,9 @@ const EditBookModal = ({
     const isbn = (form.elements.namedItem("isbn") as HTMLInputElement).value;
     const copies = (form.elements.namedItem("copies") as HTMLInputElement)
       .value;
+    const description = (
+      form.elements.namedItem("description") as HTMLInputElement
+    ).value;
 
     const UpdateBook = {
       title: title || book.title,
@@ -30,6 +33,7 @@ const EditBookModal = ({
       genre: genre || book.genre,
       isbn: isbn || book.isbn,
       copies: copies || parseInt(copies),
+      description: description || book.description,
     };
     const { data: result } = await updateBook({
       id: book._id,
