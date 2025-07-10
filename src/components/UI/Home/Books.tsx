@@ -4,6 +4,8 @@ import type { IBook } from "../../../types";
 import EditBookModal from "../../../pages/EditBookModal";
 import DeleteBookModal from "../../../pages/DeleteModal";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 const Books = () => {
   const { data: books } = useGetBooksQuery(undefined);
@@ -12,6 +14,8 @@ const Books = () => {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [seletedBook, setSelectedBook] = useState<IBook | null>(null);
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
+
+  const navigate = useNavigate();
   return (
     <div className="p-6 my-10 max-w-6xl mx-auto">
       <div className=" mb-7">
@@ -64,6 +68,15 @@ const Books = () => {
                 </td>
                 <td className="px-5 py-4 text-center">
                   <div className="flex justify-center gap-4">
+                    <button
+                      onClick={() => {
+                        navigate(`/book/${book._id}`);
+                      }}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="Edit"
+                    >
+                      <HiOutlineExternalLink className="text-xl" />
+                    </button>
                     <button
                       onClick={() => {
                         setSelectedBook(book);
