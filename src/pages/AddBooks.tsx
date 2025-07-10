@@ -1,7 +1,9 @@
 import toast from "react-hot-toast";
 import { useAddBookMutation } from "../redux/api/baseApi";
+import { useNavigate } from "react-router";
 const AddBooks = () => {
   const [addBook] = useAddBookMutation(undefined);
+  const naivigate = useNavigate();
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,6 +32,7 @@ const AddBooks = () => {
 
     if (data?.success) {
       toast.success("Book added successfully");
+      naivigate("/books");
       form.reset();
     }
     console.log(data);

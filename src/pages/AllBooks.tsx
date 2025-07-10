@@ -6,6 +6,7 @@ import EditBookModal from "./EditBookModal";
 import DeleteBookModal from "./DeleteModal";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { useNavigate } from "react-router";
+import BorrowBookModal from "./BorrowBookModal";
 
 const AllBooks = () => {
   const { data: books } = useGetBooksQuery(undefined);
@@ -29,7 +30,14 @@ const AllBooks = () => {
           availability and inventory efficiently.
         </p>
       </div>
-
+      <div className="flex items-end justify-end text-end">
+        <button
+          className="py-2 px-6 bg-[#3B9DF8] text-white rounded-full hover:bg-blue-500 transition-all duration-200 mb-4 "
+          onClick={() => navigate("/create-book")}
+        >
+          Add Book
+        </button>
+      </div>
       {/* Table */}
       <div className="overflow-x-auto bg-white rounded-xl ">
         <table className="min-w-full text-sm text-left text-gray-700">
@@ -102,7 +110,7 @@ const AllBooks = () => {
                     <button
                       disabled={!book.available}
                       onClick={() => {
-                        setSelectedBookId(book._id ?? null);
+                        setSelectedBook(book);
                         setIsBorrowModal(true);
                       }}
                       className={`text-xl ${
@@ -132,7 +140,12 @@ const AllBooks = () => {
       }
       {
         // Book Borrow Modal
-        isOpenBorrowModal && <div></div>
+        isOpenBorrowModal && (
+          <BorrowBookModal
+            book={seletedBook}
+            setIsBorrowModal={setIsBorrowModal}
+          />
+        )
       }
       {
         // Book Delete Modal
