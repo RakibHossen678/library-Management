@@ -4,14 +4,14 @@ import type { IBook } from "../types";
 
 interface EditBookModalProps {
   book: IBook;
-  setIsOpenBookEditModal: React.Dispatch<React.SetStateAction<IBook | null>>;
+  setIsOpenBookEditModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EditBookModal = ({
   book,
   setIsOpenBookEditModal,
 }: EditBookModalProps) => {
-  const [updateBook] = useUpdateBookMutation(undefined);
+  const [updateBook] = useUpdateBookMutation();
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,23 +32,24 @@ const EditBookModal = ({
       author: author || book.author,
       genre: genre || book.genre,
       isbn: isbn || book.isbn,
-      copies: copies || parseInt(copies),
+      copies: copies ? parseInt(copies) : book.copies,
       description: description || book.description,
     };
+
     const { data: result } = await updateBook({
       id: book._id,
       data: UpdateBook,
     });
+
     if (!result?.success) {
       toast.error("Book update failed");
       return;
     }
 
-    toast.success("Book update successfully");
+    toast.success("Book updated successfully");
     setIsOpenBookEditModal(false);
-    console.log(UpdateBook);
   };
-  console.log(book);
+
   return (
     <div className="fixed inset-0 z-50 bg-black/10 flex justify-center items-center px-4">
       <form
@@ -61,10 +62,7 @@ const EditBookModal = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label
-              htmlFor="title"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="title" className="text-sm font-medium text-gray-700">
               Title
             </label>
             <input
@@ -78,10 +76,7 @@ const EditBookModal = ({
           </div>
 
           <div>
-            <label
-              htmlFor="author"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="author" className="text-sm font-medium text-gray-700">
               Author
             </label>
             <input
@@ -95,10 +90,7 @@ const EditBookModal = ({
           </div>
 
           <div>
-            <label
-              htmlFor="genre"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="genre" className="text-sm font-medium text-gray-700">
               Genre
             </label>
             <input
@@ -126,10 +118,7 @@ const EditBookModal = ({
           </div>
 
           <div>
-            <label
-              htmlFor="copies"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="copies" className="text-sm font-medium text-gray-700">
               Copies
             </label>
             <input
@@ -144,10 +133,7 @@ const EditBookModal = ({
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="description"
-              className="text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="description" className="text-sm font-medium text-gray-700">
               Description
             </label>
             <textarea
@@ -163,7 +149,7 @@ const EditBookModal = ({
         <div className="flex justify-end mt-8 gap-4">
           <button
             type="button"
-            onClick={() => setIsOpenBookEditModal(null)}
+            onClick={() => setIsOpenBookEditModal(false)}
             className="px-5 py-2 rounded-md text-white bg-red-500 hover:bg-red-600 transition"
           >
             Cancel

@@ -1,35 +1,42 @@
+import { useState } from "react";
 import { MdDeleteOutline, MdEdit, MdLibraryBooks } from "react-icons/md";
+import { HiOutlineExternalLink } from "react-icons/hi";
+import { useNavigate } from "react-router";
 import { useGetBooksQuery } from "../../../redux/api/baseApi";
 import type { IBook } from "../../../types";
 import EditBookModal from "../../../pages/EditBookModal";
 import DeleteBookModal from "../../../pages/DeleteModal";
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import { HiOutlineExternalLink } from "react-icons/hi";
+import BorrowBookModal from "../../../pages/BorrowBookModal";
 
 const Books = () => {
-  const { data: books } = useGetBooksQuery(undefined);
+  const { data } = useGetBooksQuery(undefined);
+  const books: IBook[] = data?.data ?? [];
+
   const [isOpenBookEditModal, setIsOpenBookEditModal] = useState(false);
   const [isOpenBorrowModal, setIsBorrowModal] = useState(false);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-  const [seletedBook, setSelectedBook] = useState<IBook | null>(null);
-  const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
+
+  const [selectedBook, setSelectedBook] = useState<IBook | null>(null);
+  const [selectedBookId, setSelectedBookId] = useState<string>("");
 
   const navigate = useNavigate();
+
   return (
     <div className="p-6 my-10 max-w-6xl mx-auto">
-      <div className=" mb-7">
-        <h2 className="text-4xl text-center w-full font-semibold text-gray-800">
+      {/* Heading */}
+      <div className="mb-7">
+        <h2 className="text-4xl text-center font-semibold text-gray-800">
           Library Book Inventory
         </h2>
-        <p className="text-center text-sm  text-gray-600 mt-2 max-w-2xl mx-auto">
+        <p className="text-center text-sm text-gray-600 mt-2 max-w-2xl mx-auto">
           Explore and manage your library’s collection of books. Track available
           copies, browse genres, and keep everything organized with ease using
           this dynamic inventory table.
         </p>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl ">
+      {/* Table */}
+      <div className="overflow-x-auto bg-white rounded-xl">
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="bg-blue-50 text-blue-800">
             <tr>
@@ -43,7 +50,7 @@ const Books = () => {
             </tr>
           </thead>
           <tbody>
-            {books?.data?.map((book: IBook, idx: number) => (
+            {books.map((book, idx) => (
               <tr
                 key={book._id}
                 className={`${
@@ -69,11 +76,9 @@ const Books = () => {
                 <td className="px-5 py-4 text-center">
                   <div className="flex justify-center gap-4">
                     <button
-                      onClick={() => {
-                        navigate(`/book/${book._id}`);
-                      }}
+                      onClick={() => navigate(`/book/${book._id}`)}
                       className="text-blue-600 hover:text-blue-800"
-                      title="Edit"
+                      title="View"
                     >
                       <HiOutlineExternalLink className="text-xl" />
                     </button>
@@ -89,7 +94,7 @@ const Books = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setSelectedBookId(book._id ?? null);
+                        setSelectedBookId(book._id ?? "");
                         setIsOpenDeleteModal(true);
                       }}
                       className="text-red-500 hover:text-red-700"
@@ -100,7 +105,7 @@ const Books = () => {
                     <button
                       disabled={!book.available}
                       onClick={() => {
-                        setSelectedBookId(book._id ?? null);
+                        setSelectedBook(book);
                         setIsBorrowModal(true);
                       }}
                       className={`text-xl ${
@@ -119,28 +124,28 @@ const Books = () => {
           </tbody>
         </table>
       </div>
-      {
-        // Book Edit Modal
-        isOpenBookEditModal && seletedBook && (
-          <EditBookModal
-            book={seletedBook}
-            setIsOpenBookEditModal={setIsOpenBookEditModal}
-          />
-        )
-      }
-      {
-        // Book Borrow Modal
-        isOpenBorrowModal && <div></div>
-      }
-      {
-        // Book Delete Modal
-        isOpenDeleteModal && (
-          <DeleteBookModal
-            selectedBookId={selectedBookId}
-            setIsOpenDeleteModal={setIsOpenDeleteModal}
-          />
-        )
-      }
+
+      {/* Modals */}
+      {isOpenBookEditModal && selectedBook && (
+        <EditBookModal
+          book={selectedBook}
+          setIsOpenBookEditModal={setIsOpenBookEditModal}
+        />
+      )}
+
+      {isOpenBorrowModal && selectedBook && (
+        <BorrowBookModal
+          book={selectedBook}
+          setIsBorrowModal={setIsBorrowModal}
+        />
+      )}
+
+      {isOpenDeleteModal && selectedBookId && (
+        <DeleteBookModal
+          selectedBookId={selectedBookId}
+          setIsOpenDeleteModal={setIsOpenDeleteModal}
+        />
+      )}
     </div>
   );
 };

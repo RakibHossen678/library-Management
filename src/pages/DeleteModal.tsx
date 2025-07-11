@@ -1,14 +1,32 @@
 import toast from "react-hot-toast";
 import { useDeleteBookMutation } from "../redux/api/baseApi";
 
-const DeleteBookModal = ({ selectedBookId, setIsOpenDeleteModal }) => {
-  const [deleteBook] = useDeleteBookMutation(undefined);
+interface DeleteBookModalProps {
+  selectedBookId: string;
+  setIsOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const DeleteBookModal = ({
+  selectedBookId,
+  setIsOpenDeleteModal,
+}: DeleteBookModalProps) => {
+  const [deleteBook] = useDeleteBookMutation();
+
   const handleDelete = async (id: string) => {
-    console.log(id);
-    await deleteBook(id);
-    toast.success("Book deleted successfully");
-    setIsOpenDeleteModal(false);
+    try {
+      const { data } = await deleteBook(id);
+      if (data?.success) {
+        toast.success("Book deleted successfully");
+        setIsOpenDeleteModal(false);
+      } else {
+        toast.error("Failed to delete the book");
+      }
+    } catch (error) {
+      toast.error("An error occurred while deleting the book");
+      console.error(error);
+    }
   };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/20 flex justify-center items-center px-4">
       <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6">
@@ -17,7 +35,7 @@ const DeleteBookModal = ({ selectedBookId, setIsOpenDeleteModal }) => {
         </h2>
 
         <p className="text-gray-700 text-center mb-6">
-          Are you sure you want to delete This action cannot be undone.
+          Are you sure you want to delete this book? This action cannot be undone.
         </p>
 
         <div className="flex justify-end gap-4">
@@ -29,9 +47,7 @@ const DeleteBookModal = ({ selectedBookId, setIsOpenDeleteModal }) => {
           </button>
           <button
             className="px-4 py-2 rounded-md text-white bg-red-600 hover:bg-red-700 transition"
-            onClick={() => {
-              handleDelete(selectedBookId);
-            }}
+            onClick={() => handleDelete(selectedBookId)}
           >
             Delete
           </button>

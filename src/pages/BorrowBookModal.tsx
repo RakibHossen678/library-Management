@@ -1,8 +1,14 @@
 import { FaTimesCircle } from "react-icons/fa";
 import { useBorrowBookMutation } from "../redux/api/baseApi";
 import toast from "react-hot-toast";
+import type { IBook } from "../types";
 
-const BorrowBookModal = ({ book, setIsBorrowModal }) => {
+interface BorrowBookModalProps {
+  book: IBook;
+  setIsBorrowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const BorrowBookModal = ({ book, setIsBorrowModal }: BorrowBookModalProps) => {
   const [borrowBook] = useBorrowBookMutation();
 
   const handleBorrowBook = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -10,6 +16,7 @@ const BorrowBookModal = ({ book, setIsBorrowModal }) => {
     const form = e.target as HTMLFormElement;
     const quantity = form.elements.namedItem("copies") as HTMLInputElement;
     const dueDate = form.elements.namedItem("dueDate") as HTMLInputElement;
+
     if (!quantity.value || !dueDate.value) {
       toast.error("Please fill all the fields");
       return;
@@ -20,19 +27,21 @@ const BorrowBookModal = ({ book, setIsBorrowModal }) => {
       quantity: quantity.value,
       dueDate: dueDate.value,
     });
+
     if (data?.success) {
       toast.success("Book borrowed successfully");
-      setIsBorrowModal(null);
+      setIsBorrowModal(false);
+    } else {
+      toast.error("Failed to borrow book");
     }
   };
 
-  console.log(book);
   return (
     <div className="fixed inset-0 z-50 bg-black/10 flex justify-center items-center px-4">
       <div className="relative bg-white w-full max-w-2xl rounded-xl shadow-xl p-6 md:p-8">
         {/* Close Button */}
         <button
-          onClick={() => setIsBorrowModal(null)}
+          onClick={() => setIsBorrowModal(false)}
           className="absolute top-4 right-4 text-red-500 hover:text-red-600 transition"
         >
           <FaTimesCircle size={22} />
@@ -46,10 +55,7 @@ const BorrowBookModal = ({ book, setIsBorrowModal }) => {
         {/* Borrow Form */}
         <form onSubmit={handleBorrowBook} className="space-y-5">
           <div>
-            <label
-              htmlFor="copies"
-              className="block text-sm text-gray-700 mb-1"
-            >
+            <label htmlFor="copies" className="block text-sm text-gray-700 mb-1">
               Number of Copies
             </label>
             <input
@@ -60,14 +66,12 @@ const BorrowBookModal = ({ book, setIsBorrowModal }) => {
               max={book?.copies}
               placeholder="Enter number of copies to borrow"
               className="w-full px-4 py-2 border border-gray-300 rounded-md outline-blue-500 text-sm"
+              required
             />
           </div>
 
           <div>
-            <label
-              htmlFor="dueDate"
-              className="block text-sm text-gray-700 mb-1"
-            >
+            <label htmlFor="dueDate" className="block text-sm text-gray-700 mb-1">
               Select Due Date
             </label>
             <input
@@ -75,6 +79,7 @@ const BorrowBookModal = ({ book, setIsBorrowModal }) => {
               id="dueDate"
               name="dueDate"
               className="w-full px-4 py-2 border border-gray-300 rounded-md outline-blue-500 text-sm"
+              required
             />
           </div>
 

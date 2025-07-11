@@ -138,24 +138,21 @@ const AllBooks = () => {
           />
         )
       }
-      {
-        // Book Borrow Modal
-        isOpenBorrowModal && (
-          <BorrowBookModal
-            book={seletedBook}
-            setIsBorrowModal={setIsBorrowModal}
-          />
-        )
-      }
-      {
-        // Book Delete Modal
-        isOpenDeleteModal && (
-          <DeleteBookModal
-            selectedBookId={selectedBookId}
-            setIsOpenDeleteModal={setIsOpenDeleteModal}
-          />
-        )
-      }
+      {/* Book Borrow Modal */}
+      {isOpenBorrowModal && seletedBook && (
+        <BorrowBookModal
+          book={seletedBook}
+          setIsBorrowModal={setIsBorrowModal}
+        />
+      )}
+
+      {/* Book Delete Modal */}
+      {isOpenDeleteModal && selectedBookId && (
+        <DeleteBookModal
+          selectedBookId={selectedBookId}
+          setIsOpenDeleteModal={setIsOpenDeleteModal}
+        />
+      )}
     </div>
   );
 };
