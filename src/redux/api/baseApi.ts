@@ -4,6 +4,7 @@ export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://l2-assignment3-beta.vercel.app/api",
+    credentials: "include",
   }),
   tagTypes: ["books"],
   endpoints: (builder) => ({
